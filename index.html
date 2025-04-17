@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mausam-Ke-Haal</title>
+  
+  <!-- Fonts & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  
+  <!-- AOS Animations -->
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+  
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #0d1117;
+      color: #f0f6fc;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    header {
+      background: #161b22;
+      padding: 20px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #58a6ff;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    nav ul li a {
+      color: #c9d1d9;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    nav ul li a:hover {
+      color: #58a6ff;
+    }
+
+    #themeToggle {
+      background: none;
+      border: none;
+      color: #f0f6fc;
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+
+    .section {
+      padding: 50px 20px;
+      text-align: center;
+    }
+
+    .weather-info {
+      font-size: 1.2rem;
+      margin-top: 20px;
+    }
+
+    canvas {
+      max-width: 100%;
+      margin-top: 20px;
+    }
+
+    iframe {
+      border-radius: 12px;
+      box-shadow: 0 0 10px #58a6ff;
+    }
+
+    .video-container {
+      margin-top: 20px;
+      overflow: hidden;
+      border-radius: 12px;
+    }
+
+    footer {
+      background: #161b22;
+      color: #8b949e;
+      text-align: center;
+      padding: 20px;
+    }
+
+    footer .social a {
+      color: #58a6ff;
+      margin: 0 10px;
+      font-size: 1.2rem;
+    }
+
+    .light-mode {
+      background: #f5f5f5;
+      color: #0d1117;
+    }
+
+    .light-mode header,
+    .light-mode footer {
+      background: #ffffff;
+      color: #0d1117;
+    }
+
+    .light-mode nav ul li a {
+      color: #0d1117;
+    }
+
+    @media (max-width: 768px) {
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      nav ul {
+        flex-direction: column;
+        width: 100%;
+      }
+
+      .weather-info {
+        font-size: 1rem;
+      }
+
+      iframe,
+      canvas {
+        height: 250px !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <i class="fa-solid fa-cloud-sun-rain fa-2x"></i>
+      <h1>Mausam-Ke-Haal</h1>
+    </div>
+    <nav>
+      <ul>
+        <li><a href="#current-weather">Current</a></li>
+        <li><a href="#forecast">Forecast</a></li>
+        <li><a href="#radar">Radar</a></li>
+        <li><a href="#video">Video</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+    <button id="themeToggle"><i class="fas fa-adjust"></i></button>
+  </header>
+
+  <section id="current-weather" class="section" data-aos="fade-up">
+    <h2>Now in Bulandshahr</h2>
+    <div class="weather-info">
+      <p>Loading weather...</p>
+    </div>
+  </section>
+
+  <section id="forecast" class="section" data-aos="fade-up">
+    <h2>🔮 10-Day Forecast</h2>
+    <canvas id="forecastChart"></canvas>
+  </section>
+
+  <section id="radar" class="section" data-aos="zoom-in">
+    <h2>🛠️ Live Weather Radar</h2>
+    <iframe src="https://embed.windy.com/embed2.html?lat=28.4&lon=77.9&detailLat=28.4&detailLon=77.9&zoom=7&overlay=rain" width="100%" height="450" frameborder="0"></iframe>
+  </section>
+
+  <section id="video" class="section" data-aos="zoom-in">
+    <h2>🎥 Latest Weather Video</h2>
+    <div class="video-container">
+      <iframe width="100%" height="450" src="https://www.youtube.com/embed/MsBAgXry79c" frameborder="0" allowfullscreen></iframe>
+    </div>
+  </section>
+
+  <footer id="contact">
+    <p>Made with ☁️ by Mausam-Ke-Haal • Bulandshahr, UP</p>
+    <div class="social">
+      <a href="#"><i class="fab fa-facebook-f"></i></a>
+      <a href="#"><i class="fab fa-twitter"></i></a>
+      <a href="#"><i class="fab fa-instagram"></i></a>
+    </div>
+  </footer>
+
+  <!-- AOS Init -->
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>AOS.init();</script>
+
+  <!-- Weather & Chart JS -->
+  <script>
+    // Theme Toggle
+    const themeToggle = document.getElementById('themeToggle');
+    themeToggle.addEventListener('click', () => {
+      document.body.classList.toggle('light-mode');
+    });
+
+    // Mock Weather Data Fetch
+    async function getLiveWeather() {
+      const temp = 41;
+      const condition = 'Sunny';
+      const humidity = 17;
+      const wind = '8 km/h ESE';
+
+      document.querySelector(".weather-info").innerHTML = `
+        <p>🌡️ Temp: ${temp}°C</p>
+        <p>🌞 Condition: ${condition}</p>
+        <p>💧 Humidity: ${humidity}%</p>
+        <p>🌬️ Wind: ${wind}</p>
+      `;
+    }
+
+    getLiveWeather();
+
+    // Forecast Chart
+    const ctx = document.getElementById('forecastChart').getContext('2d');
+    const forecastChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: ['Apr 17', 'Apr 18', 'Apr 19', 'Apr 20', 'Apr 21', 'Apr 22', 'Apr 23', 'Apr 24'],
+        datasets: [
+          {
+            label: 'High (°C)',
+            data: [41, 42, 43, 42, 40, 41, 39, 38],
+            borderColor: '#ff6384',
+            backgroundColor: 'transparent',
+            tension: 0.3
+          },
+          {
+            label: 'Low (°C)',
+            data: [27, 28, 26, 25, 26, 27, 25, 24],
+            borderColor: '#36a2eb',
+            backgroundColor: 'transparent',
+            tension: 0.3
+          }
+        ]
+      },
+      options: {
+        plugins: {
+          legend: {
+            labels: { color: '#f0f6fc' }
+          }
+        },
+        scales: {
+          x: {
+            ticks: { color: '#f0f6fc' }
+          },
+          y: {
+            ticks: { color: '#f0f6fc' }
+          }
+        }
+      }
+    });
+  </script>
+</body>
+</html>
